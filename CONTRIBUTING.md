@@ -4,7 +4,7 @@ Keep changes focused and reviewable. Describe the user problem, the resulting be
 
 ## Branch workflow
 
-Use your assigned branch: `nafis`, `jabir`, `junaid` or `sami`. `main` is the reviewed baseline. Nafis owns the repository and makes the final merge decision.
+Nafis works on `nafis`; `main` is the owner-controlled baseline. The `jabir`, `junaid` and `sami` branches are reserved for the team. Teammate access is currently withheld until main protection can be enforced on a supported plan. The instructions below apply once that access is enabled.
 
 ```sh
 git clone https://github.com/NafisAfzal/CellShiftAI.git
@@ -17,7 +17,28 @@ git merge origin/main
 
 Replace `jabir` with your branch. Commit and push there, then open a pull request to `main` and request `@NafisAfzal`. Keep titles concrete, for example `Fix clipped tower labels on narrow screens`. Prefer a squash merge after review. The four named working branches are retained after merging.
 
-GitHub does not assign ownership to a branch name. Until private branch protection is supported by the account plan, the no-direct-push rule for `main` is a team policy, not an enforced permission boundary. See [governance](docs/REPOSITORY.md).
+GitHub does not assign ownership to a branch name. The repository currently has no other human writers or pending write invitations, which gives Nafis exclusive human write access. A local hook also blocks direct pushes to `main`; hooks are bypassable and are not GitHub permissions. Teammates must not be re-invited before main protection is verified. See [governance](docs/REPOSITORY.md).
+
+Nafis's normal workflow is:
+
+```sh
+git switch nafis
+git pull --ff-only origin nafis
+# make and check the change
+git add <changed-files>
+git commit -m "Describe the change"
+git push origin nafis
+gh pr create --base main --head nafis
+gh pr checks <number> --watch
+# Nafis reviews the diff and merges the passing pull request on GitHub.
+git fetch origin
+git switch main
+git pull --ff-only origin main
+git switch nafis
+git merge origin/main
+```
+
+Use `git pull` to update your local copy of `main`; a pull request brings changes from `nafis` into remote `main`. Do not force-push either branch.
 
 ## Local setup and hooks
 

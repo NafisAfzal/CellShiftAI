@@ -48,6 +48,8 @@ The workflow's current remote results are available in [GitHub Actions](https://
 
 ## Remaining gaps
 
-Private main protection requires a supported plan. Firebase rules were reviewed but not emulator-tested in this pass. Live provider availability, cloud infrastructure, internet abuse resistance, full screen-reader coverage and non-Chromium browsers were not verified. No container image exists, so no container scan was performed. Scanners cannot guarantee the absence of every possible credential or vulnerability.
+In the follow-up [feature and access verification](FEATURE_VERIFICATION.md), teammate invitations were withdrawn to keep main under exclusive human control of Nafis. The suite expanded to 35 unit tests, 10 real API groups and 15 feature workflows across Chromium, Firefox and WebKit, including provider-timeout fixtures and private-file exposure checks. The failed-rerun regression was fixed. The original results above describe the initial publication pass.
+
+Private branch rules with teammate write access still require a supported plan; the repository is currently owner-only. Firebase rules were reviewed but not emulator-tested. Live provider availability, cloud infrastructure, internet abuse resistance and full screen-reader coverage remain unverified. No container image exists, so no container scan was performed. Scanners cannot guarantee the absence of every possible credential or vulnerability.
 
 Rotate credentials that were shared outside Git before broader use. Publishing a sanitized repository does not revoke an exposed key or make the local server suitable for public hosting.

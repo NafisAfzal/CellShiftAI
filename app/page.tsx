@@ -283,6 +283,8 @@ export default function HomePage() {
     setLoading("sim");
     setElapsedSec(0);
     setNotice(null);
+    setOutcome(null);
+    setPhase("before");
     setExplanation(null);
     try {
       const o = await postJSON<SimulationResponse>("/api/simulate", draft);

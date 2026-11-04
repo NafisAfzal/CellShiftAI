@@ -12,6 +12,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "test:ui": "node scripts/ui-regression.mjs",
+    "test:api": "node --test scripts/api-integration.mjs",
+    "test:features": "node scripts/feature-workflows.mjs",
     "test:topology": "node scripts/topology-framing-check.mjs",
     "security:check": "node scripts/check-repository.mjs"
   },

@@ -119,7 +119,7 @@ npm run test:ui
 npm run test:topology
 ```
 
-Browser checks cover the approval flow, theme persistence, real simulation responses, exports, responsive layouts and topology framing. AI responses are deterministic fixtures in these tests; **CI does not use provider secrets or make paid AI calls**. See [testing](docs/TESTING.md) for scope, alternate ports and exact commands.
+Browser checks cover approval, theme persistence, real simulation responses, exports, responsive layouts and topology framing. Expanded feature checks run real local parsing/review in Chromium, Firefox and WebKit, including failures and retries. **CI does not use provider secrets or make paid AI calls.** See [testing](docs/TESTING.md) for scope, alternate ports and exact commands.
 
 ## Team and branches
 
@@ -130,9 +130,9 @@ Browser checks cover the approval flow, theme persistence, real simulation respo
 | Junaid | [Junaid-redart](https://github.com/Junaid-redart) | `junaid` |
 | Sami | [mostahidhossainsami](https://github.com/mostahidhossainsami) | `sami` |
 
-`main` is the shared baseline. Open a pull request from your working branch and request Nafis's review. Repository administration belongs to **NafisAfzal**.
+`main` is the owner-controlled baseline. Nafis works on `nafis`, pushes that branch, and brings checked changes into `main` through a pull request. The local push hook blocks direct pushes to `main`. Repository administration belongs to **NafisAfzal**.
 
-**Current GitHub limitation:** this private repository's account plan does not support enforced branch rules. CODEOWNERS and the team workflow request Nafis's approval, but cannot block a collaborator's direct push. The prepared [main protection configuration](.github/main-ruleset.json) can be applied once GitHub Pro is available. See [repository governance](docs/REPOSITORY.md). The repository stays private unless Nafis changes its visibility.
+**Current access:** the private repository is owner-only. Pending teammate write invitations were withdrawn because the current GitHub plan cannot restrict private branches. The named teammate branches remain reserved, but teammates cannot push to them yet. Once a supported plan is available, the [protection setup](scripts/protect-main.ps1) can enforce owner-only `main` updates and then restore the requested invitations. It verifies protection before inviting anyone. See [repository governance](docs/REPOSITORY.md). The repository stays private unless Nafis changes its visibility.
 
 ## Security and limits
 
