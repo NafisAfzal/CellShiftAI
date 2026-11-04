@@ -2,6 +2,8 @@
 
 Use Node.js 24 and the committed lockfile. CI runs in explicit local mode with Firebase disabled and no provider secrets.
 
+Full CI runs for pull requests targeting `main`, updates to `main`, manual dispatches and the weekly audit. Working-branch pushes are checked through their open pull request. This avoids duplicate push/PR runs for the same change. Linux jobs use `ubuntu-24.04` rather than a floating runner label.
+
 ## Routine checks
 
 ```sh

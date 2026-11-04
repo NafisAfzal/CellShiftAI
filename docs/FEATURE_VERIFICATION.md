@@ -37,3 +37,5 @@ The API and feature checks refuse a live AI provider mode. Only deliberate error
 Chromium, Firefox and WebKit automation does not replace real-device or screen-reader testing. Firebase cloud persistence and emulator rules were not exercised in this pass. Live provider availability was not tested. The current private plan still cannot support the requested single-repository collaboration safely; teammate access remains withheld until effective main protection or an approved separate-workspace arrangement is available.
 
 See [testing instructions](TESTING.md), [governance](REPOSITORY.md), and the [security-review record](SECURITY_REVIEW.md). CI runs the API checks and Chromium features alongside the existing browser/topology suite, with separate Firefox and WebKit feature jobs.
+
+The first branch run passed all six GitHub jobs. A duplicate PR run stalled during Chromium installation before executing browser tests; a subsequent workflow update superseded it. Full checks now run for PRs and main updates on a pinned Ubuntu 24.04 runner, avoiding duplicate full runs and floating operating-system changes. Current remote results remain visible in GitHub Actions.
