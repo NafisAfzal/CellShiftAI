@@ -1,4 +1,11 @@
 #!/bin/sh
+# main is updated through an owner-controlled pull request, never a direct push.
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    echo 'Push to your working branch (nafis, jabir, junaid or sami) and open a pull request to main. Direct main pushes are disabled in this clone.' >&2
+    exit 1
+  fi
+done
 node scripts/check-repository.mjs || exit 1
 if command -v gitleaks >/dev/null 2>&1; then
   gitleaks git --redact=100 --no-banner || exit 1

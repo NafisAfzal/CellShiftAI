@@ -76,6 +76,18 @@ test("AI cannot bypass site, integer or power bounds", async (t) => {
   }
 });
 
+test("network timeout falls back for parsing and review without exposing upstream details", async (t) => {
+  setupProvider(t, async () => { throw new DOMException("private-upstream-timeout-details", "TimeoutError"); });
+  const parsed = await parseEngineerPrompt("Increase Cell B by 3 dB");
+  const review = await explainApprovedChange({ siteId: "cell-b", deltaPowerDb: 3 });
+  for (const result of [parsed, review]) {
+    assert.equal(result.source, "MOCK_FALLBACK");
+    assert.ok(!JSON.stringify(result).includes("private-upstream-timeout-details"));
+  }
+  assert.deepEqual(parsed.change, { siteId: "cell-b", deltaPowerDb: 3 });
+  assert.ok(review.observations.join(" ").includes(String(simulate(defaultScenario(), parsed.change).proposed.coveragePct)));
+});
+
 test("live review preserves engine observations and rejects invented numerical claims", async (t) => {
   const responses = [{ summary: "Synthetic model only; engineering review remains necessary.", checks: ["Review measured interference."], rollback: ["Record the prior power setting."] }, { summary: "Coverage will improve by 99 percent.", checks: ["Review measured interference."], rollback: ["Record the prior setting."] }];
   setupProvider(t, async () => completion(responses.shift()));

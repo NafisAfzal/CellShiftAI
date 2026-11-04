@@ -9,6 +9,7 @@ Nafis controls the visibility decision. Do not automate it.
 - [ ] Inspect screenshots, issue attachments and Actions artifacts for credentials or private information. CI evidence should remain synthetic.
 - [ ] Review open issues, pull requests, commit messages, repository description and contributor privacy.
 - [ ] Verify the owner, collaborators and any deploy keys or installed apps. Remove access that is no longer needed.
+- [ ] Keep the repository owner-only until an effective owner-only main restriction has been verified. A private personal repository cannot give teammates read-only access on the current plan.
 - [ ] Apply and verify main protection on a supported plan, or after public visibility makes branch rules available. Check code-owner approval, required checks, force-push blocking and owner bypass with a non-owner account.
 - [ ] Enable GitHub secret scanning/push protection and private vulnerability reporting where available. Confirm the reporting instructions in SECURITY.md.
 - [ ] Decide on an explicit license before inviting public reuse. The current code is marked `UNLICENSED`; it is not automatically open source.

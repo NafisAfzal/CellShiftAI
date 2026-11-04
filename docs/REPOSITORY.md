@@ -6,7 +6,7 @@
 
 **Owner and administrator:** NafisAfzal
 
-Only Nafis should change visibility, transfer ownership, manage collaborators or approve the final merge into `main`. Collaborators are invited with write permission, not administration. Invitations must be accepted before access works.
+Only Nafis may change visibility, transfer ownership, manage collaborators or make the final merge into `main`. The current repository is owner-only: Nafis is the sole human writer, and the three pending teammate write invitations have been withdrawn. All five requested branches remain intact.
 
 | Branch | Purpose |
 | --- | --- |
@@ -16,15 +16,30 @@ Only Nafis should change visibility, transfer ownership, manage collaborators or
 | `junaid` | Junaid's work |
 | `sami` | Sami's work |
 
-These are working conventions, not per-person branch permissions. A collaborator's write role is repository-wide.
+These names are working conventions, not per-person branch permissions. The teammate branches are reserved; teammates do not currently have access. A collaborator's write role would be repository-wide.
 
 ## Main protection: current limitation
 
 GitHub returned **HTTP 403: upgrade to GitHub Pro or make this repository public** when enabling rulesets for this private repository. The repository remains private. No billing or visibility change was made.
 
-At the current plan, CODEOWNERS identifies Nafis as reviewer but cannot prevent direct pushes or merges. The team must follow the pull-request policy voluntarily until enforceable rules are available. Repository ownership and administration still belong to Nafis.
+At the current plan, CODEOWNERS cannot prevent a writer's direct push. Because exclusive control of `main` is required, no other human is granted repository write access. This protects `main` through repository access, while temporarily withholding teammate participation. A local push hook also blocks direct pushes to `main`, but hooks are bypassable and are not the remote security boundary.
 
-Official reference: [GitHub ruleset availability](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets).
+GitHub does not offer read-only collaborator access on a private personal repository. Keeping this single repository private, allowing teammates to push, and restricting `main` requires a supported plan. An owner-only canonical repository plus a separate private team workspace is another possible arrangement, but no second repository or ownership transfer has been created.
+
+Official references: [GitHub ruleset availability](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [personal-repository permissions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/repository-access-and-collaboration/permission-levels-for-a-personal-account-repository).
+
+## Nafis's workflow
+
+```mermaid
+flowchart LR
+  Work[Work on nafis] --> Push[Push nafis]
+  Push --> CI[Passing checks]
+  CI --> PR[Pull request to main]
+  PR --> Owner[Nafis reviews and merges]
+  Owner --> Main[Pull updated main locally]
+```
+
+Use `git push origin nafis`, then a pull request with base `main` and head `nafis`. A pull updates a local branch; it does not merge a GitHub pull request. After the owner merge, fetch and pull `main`, switch back to `nafis`, and merge `origin/main` into the working branch. Exact commands are in [CONTRIBUTING.md](../CONTRIBUTING.md). Automatic merging remains disabled.
 
 ## Prepared protection
 
@@ -33,7 +48,7 @@ Official reference: [GitHub ruleset availability](https://docs.github.com/en/rep
 - Restrict updates and deletion to bypass actors.
 - Block force pushes and require linear history.
 - Require pull requests, one approval, Nafis as code owner, resolved discussions and dismissal of stale approvals.
-- Require the `Quality`, `Browser workflow`, `Static analysis` and `Secrets` GitHub Actions checks.
+- Require `Quality`, `Browser workflow`, `Static analysis`, `Secrets`, `Feature workflows (firefox)` and `Feature workflows (webkit)`.
 - Allow repository administrators to bypass. In this personal repository, administration belongs to Nafis.
 
 When a supported plan is active, authenticate `gh` as NafisAfzal and run:
@@ -42,7 +57,13 @@ When a supported plan is active, authenticate `gh` as NafisAfzal and run:
 ./scripts/protect-main.ps1
 ```
 
-The script creates or updates the named ruleset. It does not change visibility, purchase a plan or invite anyone. Verify the resulting rule in **Settings → Rules → Rulesets** and test it using a non-owner collaborator before treating it as enforced. Owner bypass is intentional; Nafis should still merge through reviewed, passing pull requests.
+The script creates or updates the named ruleset, verifies administrator-only bypass and checks that the update restriction is effective on `main`. It does not change visibility or billing. By default it sends no invitations. After the account supports protection, this explicit option restores the three requested write invitations **only after verification succeeds**:
+
+```powershell
+./scripts/protect-main.ps1 -InviteCollaborators
+```
+
+Wrong identity, unavailable plan, failed application, unsafe bypass or ineffective rules stop the script before invitations; automated fixtures cover those cases without making real GitHub calls. Also verify the resulting rule in **Settings → Rules → Rulesets** and test it with a non-owner collaborator. Owner bypass is intentional; Nafis should still use passing pull requests.
 
 ## Repository settings
 

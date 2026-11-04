@@ -9,6 +9,7 @@
 | [API contracts](06-api-contracts-and-data.md) | Endpoints, allowed input and provenance |
 | [AI provider setup](AI_PROVIDER_SETUP.md) | Optional server-only provider configuration |
 | [Testing](TESTING.md) | Local commands and browser-check scope |
+| [Feature verification](FEATURE_VERIFICATION.md) | Expanded integration/cross-browser checks and the failed-rerun fix |
 | [Threat model](05-security-threat-model.md) | Implemented protections and deployment gaps |
 | [Security review](SECURITY_REVIEW.md) | Publication checks, dependency fixes and scanner coverage |
 | [Repository governance](REPOSITORY.md) | Ownership, branches, review policy and plan limitations |
