@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "status",
+    "siteId",
+    "deltaPowerDb",
+    "interpretation",
+    "question"
+  ],
+  "properties": {
+    "status": {
+      "enum": [
+        "proposal",
+        "clarify"
+      ]
+    },
+    "siteId": {
+      "type": "string"
+    },
+    "deltaPowerDb": {
+      "type": "integer",
+      "minimum": -6,
+      "maximum": 6
+    },
+    "interpretation": {
+      "type": "string",
+      "maxLength": 300
+    },
+    "question": {
+      "type": "string",
+      "maxLength": 300
+    }
+  }
+}

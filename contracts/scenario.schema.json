@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CellShift Synthetic Scenario (actual source lib/simulation.ts)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "modelVersion",
+    "cells",
+    "users"
+  ],
+  "properties": {
+    "modelVersion": {
+      "type": "string"
+    },
+    "cells": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "x",
+          "y",
+          "powerDbm",
+          "capacityUsers"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "cell-a",
+              "cell-b",
+              "cell-c",
+              "cell-d",
+              "cell-e"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "powerDbm": {
+            "type": "number"
+          },
+          "capacityUsers": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "users": {
+      "type": "array",
+      "minItems": 100,
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "x",
+          "y",
+          "demand"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "demand": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}

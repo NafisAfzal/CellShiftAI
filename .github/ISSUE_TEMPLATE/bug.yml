@@ -1,0 +1,28 @@
+name: Bug report
+description: Report a reproducible problem. Do not post credentials or security vulnerabilities here.
+body:
+  - type: markdown
+    attributes:
+      value: 'For a suspected vulnerability, follow SECURITY.md. Remove private information from screenshots and logs.'
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Include the starting state and the action that fails.
+    validations:
+      required: true
+  - type: textarea
+    id: result
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, operating system, Node version, theme and viewport width.
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or redacted error details

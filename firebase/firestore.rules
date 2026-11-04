@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/runs/{runId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['siteId', 'deltaPowerDb', 'modelVersion', 'createdAt'])
+        && request.resource.data.keys().hasAll(['siteId', 'deltaPowerDb', 'modelVersion', 'createdAt'])
+        && request.resource.data.siteId in ['cell-a','cell-b','cell-c','cell-d','cell-e']
+        && request.resource.data.deltaPowerDb is int
+        && request.resource.data.deltaPowerDb >= -6
+        && request.resource.data.deltaPowerDb <= 6
+        && request.resource.data.modelVersion == 'synthetic-rf-proxy-v1.0'
+        && request.resource.data.createdAt == request.time;
+      allow update, delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
