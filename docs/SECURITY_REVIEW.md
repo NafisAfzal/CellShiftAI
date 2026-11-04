@@ -38,6 +38,12 @@ This review used [OWASP Top 10:2025](https://top10.owasp.org/2025/), [ASVS 5.0.0
 - **Trivy 0.76.1:** filesystem vulnerability, secret and misconfiguration scan ran against the sanitized snapshot; the second run included 508 package entries with development dependencies. Both runs reported zero vulnerabilities and zero secrets. The database was updated on 4 November 2026 UTC. No supported deployment/IaC configuration was detected, so this is not infrastructure validation.
 - **Semgrep 1.177.0:** local Windows invocation of the explicit `p/javascript` ruleset failed during core rule validation. It is not counted as a successful local scan. A Linux CI job runs the same explicit ruleset with metrics disabled, no token and no source upload.
 
+## Remote verification
+
+The [initial GitHub CI run](https://github.com/NafisAfzal/CellShiftAI/actions/runs/41915229974) passed all four jobs: **Quality**, **Browser workflow**, **Static analysis** and **Secrets**. This independently verified a fresh Linux installation, dependency audit, 31 tests, type checking, lint, production builds, browser workflows and history scanning. Semgrep succeeded on Linux; the local Windows failure remains recorded above.
+
+All 22 maintained Markdown files were checked for missing local links, with none found. The 26 generated browser assets were compared against configured local credential values; none contained a match. Only `.env.example` is tracked among environment files.
+
 The workflow's current remote results are available in [GitHub Actions](https://github.com/NafisAfzal/CellShiftAI/actions/workflows/ci.yml). Local reports, scanner databases, logs and browser profiles stay untracked.
 
 ## Remaining gaps

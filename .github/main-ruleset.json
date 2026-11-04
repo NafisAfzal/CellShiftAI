@@ -1,5 +1,5 @@
 {
-  "name": "Main — Nafis approval and checked changes",
+  "name": "Main - Nafis approval and checked changes",
   "target": "branch",
   "enforcement": "active",
   "bypass_actors": [{ "actor_id": 5, "actor_type": "RepositoryRole", "bypass_mode": "always" }],
@@ -28,7 +28,8 @@
         "required_status_checks": [
           { "context": "Quality", "integration_id": 15368 },
           { "context": "Browser workflow", "integration_id": 15368 },
-          { "context": "Secrets", "integration_id": 15368 }
+          { "context": "Secrets", "integration_id": 15368 },
+          { "context": "Static analysis", "integration_id": 15368 }
         ]
       }
     }

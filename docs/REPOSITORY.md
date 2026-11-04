@@ -33,7 +33,7 @@ Official reference: [GitHub ruleset availability](https://docs.github.com/en/rep
 - Restrict updates and deletion to bypass actors.
 - Block force pushes and require linear history.
 - Require pull requests, one approval, Nafis as code owner, resolved discussions and dismissal of stale approvals.
-- Require the `Quality`, `Browser workflow` and `Secrets` GitHub Actions checks.
+- Require the `Quality`, `Browser workflow`, `Static analysis` and `Secrets` GitHub Actions checks.
 - Allow repository administrators to bypass. In this personal repository, administration belongs to Nafis.
 
 When a supported plan is active, authenticate `gh` as NafisAfzal and run:
