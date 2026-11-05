@@ -10,7 +10,8 @@ $repository = $repository | ConvertFrom-Json
 if ($repository.owner.login -ne 'NafisAfzal' -or $repository.default_branch -cne 'main') { throw 'Expected the NafisAfzal repository with main as its default branch.' }
 $rules = gh api "repos/$repo/rulesets"
 if ($LASTEXITCODE -ne 0) { throw 'GitHub refused ruleset access. Private branch rules require GitHub Pro. No visibility or billing changes were made.' }
-$existing = ($rules | ConvertFrom-Json | Where-Object name -eq 'Main - Nafis approval and checked changes').id
+$ruleObjects = $rules | ConvertFrom-Json
+$existing = ($ruleObjects | Where-Object name -eq 'Main - Nafis approval and checked changes').id
 $body = Join-Path $PSScriptRoot '../.github/main-ruleset.json'
 if ($existing) {
   $result = gh api "repos/$repo/rulesets/$existing" --method PUT --input $body
@@ -24,7 +25,7 @@ if (@($applied.bypass_actors).Count -ne 1 -or $applied.bypass_actors[0].actor_ty
 # Checks and history have no bypass, including for the owner.
 $checksBody = Join-Path $PSScriptRoot '../.github/main-checks-ruleset.json'
 $checksName = 'Main - Required checks and history'
-$checksExisting = ($rules | ConvertFrom-Json | Where-Object name -eq $checksName).id
+$checksExisting = ($ruleObjects | Where-Object name -eq $checksName).id
 $checksEndpoint = if ($checksExisting) { "repos/$repo/rulesets/$checksExisting" } else { "repos/$repo/rulesets" }
 $checksMethod = if ($checksExisting) { 'PUT' } else { 'POST' }
 $checksResult = gh api $checksEndpoint --method $checksMethod --input $checksBody

@@ -16,11 +16,13 @@ function global:gh {
   if ($endpoint -eq 'repos/NafisAfzal/CellShiftAI') {
     return '{"owner":{"login":"NafisAfzal"},"private":true,"default_branch":"main"}'
   }
-  if ($endpoint -eq 'repos/NafisAfzal/CellShiftAI/rulesets') {
-    if ($Arguments -notcontains 'POST') {
+  if ($endpoint -like 'repos/NafisAfzal/CellShiftAI/rulesets*') {
+    if ($Arguments -notcontains 'POST' -and $Arguments -notcontains 'PUT') {
       if ($global:PolicyScenario -eq 'unsupported-plan') { $global:LASTEXITCODE = 1; return '{}' }
+      if ($global:PolicyScenario -eq 'existing-rules') { return '[{"id":317,"name":"Main - Nafis approval and checked changes"},{"id":318,"name":"Main - Required checks and history"}]' }
       return '[]'
     }
+    if ($global:PolicyScenario -eq 'existing-rules' -and $Arguments -contains 'POST') { throw 'Existing rules must be updated, not recreated.' }
     if ($global:PolicyScenario -eq 'apply-failed') { $global:LASTEXITCODE = 1; return '{}' }
     $body = $Arguments[([Array]::IndexOf($Arguments, '--input') + 1)]
     $result = Get-Content $body -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -44,7 +46,7 @@ function global:gh {
   throw "Unexpected test CLI call: $endpoint"
 }
 
-foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypass','ineffective-rule','checks-inactive','checks-bypass','missing-checks','success','success-no-invites')) {
+foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypass','ineffective-rule','checks-inactive','checks-bypass','missing-checks','success','success-no-invites','existing-rules')) {
   $global:PolicyScenario = $case
   $global:PolicyInvitations.Clear()
   $failed = $false
@@ -52,7 +54,7 @@ foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypa
     if ($case -eq 'success-no-invites') { & $protect | Out-Null }
     else { & $protect -InviteCollaborators | Out-Null }
   } catch { $failed = $true }
-  if ($case -eq 'success') {
+  if ($case -in @('success','existing-rules')) {
     if ($failed -or $global:PolicyInvitations.Count -ne 3) { throw 'Verified protection must allow the three requested invitations.' }
   } elseif ($case -eq 'success-no-invites') {
     if ($failed -or $global:PolicyInvitations.Count -ne 0) { throw 'Protection without the invitation option must not invite anyone.' }
@@ -60,4 +62,4 @@ foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypa
     throw "Unsafe policy scenario sent invitations or did not stop: $case"
   }
 }
-Write-Output '10 protection scenarios passed; no native GitHub calls made.'
+Write-Output '11 protection scenarios passed; no native GitHub calls made.'
