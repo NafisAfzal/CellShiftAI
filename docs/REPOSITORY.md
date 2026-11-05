@@ -1,74 +1,45 @@
-# Repository ownership and workflow
+# Repository ownership and collaboration
 
-**Repository:** [NafisAfzal/CellShiftAI](https://github.com/NafisAfzal/CellShiftAI)
+Owner and final merger: **NafisAfzal**. The public-release workflow publishes the source, verifies main protection, then sends the requested collaborator invitations. Invitation acceptance is a separate action by each teammate.
 
-**Visibility:** private
+| Person | GitHub account | Working branch |
+| --- | --- | --- |
+| Nafis | NafisAfzal | `nafis` |
+| Junaid | Junaid-redart | `junaid` |
+| Jabir | tasnimjabir | `jabir` |
+| Sami | mostahidhossainsami | `sami` |
 
-**Owner and administrator:** NafisAfzal
+`main` is the reviewed baseline. Branch names assign a working convention, not exclusive permissions to individual working branches. Collaborators receive write access, never administration.
 
-Only Nafis may change visibility, transfer ownership, manage collaborators or make the final merge into `main`. The current repository is owner-only: Nafis is the sole human writer, and the three pending teammate write invitations have been withdrawn. All five requested branches remain intact.
+## Main rules
 
-| Branch | Purpose |
-| --- | --- |
-| `main` | Shared, reviewed baseline |
-| `nafis` | Nafis's work |
-| `jabir` | Jabir's work |
-| `junaid` | Junaid's work |
-| `sami` | Sami's work |
+Two independent active rulesets target only `refs/heads/main`:
 
-These names are working conventions, not per-person branch permissions. The teammate branches are reserved; teammates do not currently have access. A collaborator's write role would be repository-wide.
+1. **Main - Nafis approval and checked changes** restricts updates and requires pull requests with code-owner review. Only the repository administrator can bypass through a pull request. Direct pushes are not included in this bypass.
+2. **Main - Required checks and history** requires all six CI checks, linear history, and blocks deletion and force pushes. It has no bypass actors, including the owner.
 
-## Main protection: current limitation
+CODEOWNERS assigns every file to `@NafisAfzal`. Teammates may leave advisory reviews, but cannot merge into main. Nafis cannot approve his own GitHub PR; his PR-only administrator bypass permits merging his own work after required CI passes. For teammate PRs, Nafis reviews and makes the final merge decision.
 
-GitHub returned **HTTP 403: upgrade to GitHub Pro or make this repository public** when enabling rulesets for this private repository. The repository remains private. No billing or visibility change was made.
+The six required checks are Quality, Browser workflow, Static analysis, Secrets, Feature workflows (firefox), and Feature workflows (webkit). Automatic merging is disabled.
 
-At the current plan, CODEOWNERS cannot prevent a writer's direct push. Because exclusive control of `main` is required, no other human is granted repository write access. This protects `main` through repository access, while temporarily withholding teammate participation. A local push hook also blocks direct pushes to `main`, but hooks are bypassable and are not the remote security boundary.
+## Everyday workflow
 
-GitHub does not offer read-only collaborator access on a private personal repository. Keeping this single repository private, allowing teammates to push, and restricting `main` requires a supported plan. An owner-only canonical repository plus a separate private team workspace is another possible arrangement, but no second repository or ownership transfer has been created.
+Work on your assigned branch, push it, and open a pull request to `main`. Nafis reviews the diff and merges the passing PR. Pull the updated main and merge it into your working branch before the next change. See [CONTRIBUTING.md](../CONTRIBUTING.md) for commands.
 
-Official references: [GitHub ruleset availability](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets), [personal-repository permissions](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/repository-access-and-collaboration/permission-levels-for-a-personal-account-repository).
+Local hooks add publication checks and block direct main pushes in clones where enabled. They are bypassable; the GitHub rulesets provide the remote restrictions.
 
-## Nafis's workflow
+## Applying the configuration
 
-```mermaid
-flowchart LR
-  Work[Work on nafis] --> Push[Push nafis]
-  Push --> CI[Passing checks]
-  CI --> PR[Pull request to main]
-  PR --> Owner[Nafis reviews and merges]
-  Owner --> Main[Pull updated main locally]
-```
-
-Use `git push origin nafis`, then a pull request with base `main` and head `nafis`. A pull updates a local branch; it does not merge a GitHub pull request. After the owner merge, fetch and pull `main`, switch back to `nafis`, and merge `origin/main` into the working branch. Exact commands are in [CONTRIBUTING.md](../CONTRIBUTING.md). Automatic merging remains disabled.
-
-## Prepared protection
-
-[`.github/main-ruleset.json`](../.github/main-ruleset.json) targets only `main` and requests:
-
-- Restrict updates and deletion to bypass actors.
-- Block force pushes and require linear history.
-- Require pull requests, one approval, Nafis as code owner, resolved discussions and dismissal of stale approvals.
-- Require `Quality`, `Browser workflow`, `Static analysis`, `Secrets`, `Feature workflows (firefox)` and `Feature workflows (webkit)`.
-- Allow repository administrators to bypass. In this personal repository, administration belongs to Nafis.
-
-When a supported plan is active, authenticate `gh` as NafisAfzal and run:
+Authenticate `gh` as NafisAfzal and run:
 
 ```powershell
 ./scripts/protect-main.ps1
 ```
 
-The script creates or updates the named ruleset, verifies administrator-only bypass and checks that the update restriction is effective on `main`. It does not change visibility or billing. By default it sends no invitations. After the account supports protection, this explicit option restores the three requested write invitations **only after verification succeeds**:
+The script applies both checked-in rulesets and verifies their effective rules on main. The explicit `-InviteCollaborators` option restores the three requested invitations only after verification succeeds. It does not change visibility or billing. Fixture tests cover failed identity, plan access, application, unsafe bypass and ineffective rules without making real GitHub requests.
 
-```powershell
-./scripts/protect-main.ps1 -InviteCollaborators
-```
+Public repositories support branch rules on GitHub Free. Private repositories require a supported paid plan for these restrictions. See [GitHub rulesets](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets).
 
-Wrong identity, unavailable plan, failed application, unsafe bypass or ineffective rules stop the script before invitations; automated fixtures cover those cases without making real GitHub calls. Also verify the resulting rule in **Settings → Rules → Rulesets** and test it with a non-owner collaborator. Owner bypass is intentional; Nafis should still use passing pull requests.
+## Release records
 
-## Repository settings
-
-Squash merging is enabled; merge commits, rebase merging and auto-merge are disabled. Named working branches are not automatically deleted after merge. Issues are enabled, and documentation lives in the repository rather than a separate wiki.
-
-CI has read-only repository permissions. It receives no provider secrets. The default Actions token cannot approve pull requests. Dependabot proposes dependency and action updates for review.
-
-Before making the repository public, complete [PUBLIC_RELEASE.md](PUBLIC_RELEASE.md). Source publication does not deploy the application or grant an open-source license.
+The earlier owner-only arrangement and withheld invitations are historical decisions recorded in [feature verification](FEATURE_VERIFICATION.md). The current release audit is in [PRE_RELEASE_CHECK.md](PRE_RELEASE_CHECK.md). Keep source publishing separate from deploying a public app: the localhost API still needs a separate authentication and abuse review before hosting.

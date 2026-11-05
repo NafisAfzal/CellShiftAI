@@ -4,7 +4,7 @@ Keep changes focused and reviewable. Describe the user problem, the resulting be
 
 ## Branch workflow
 
-Nafis works on `nafis`; `main` is the owner-controlled baseline. The `jabir`, `junaid` and `sami` branches are reserved for the team. Teammate access is currently withheld until main protection can be enforced on a supported plan. The instructions below apply once that access is enabled.
+Nafis works on `nafis`; Junaid on `junaid`, Jabir on `jabir`, and Sami on `sami`. `main` is the owner-controlled baseline. Teammates must accept their collaborator invitations before pushing.
 
 ```sh
 git clone https://github.com/NafisAfzal/CellShiftAI.git
@@ -17,7 +17,7 @@ git merge origin/main
 
 Replace `jabir` with your branch. Commit and push there, then open a pull request to `main` and request `@NafisAfzal`. Keep titles concrete, for example `Fix clipped tower labels on narrow screens`. Prefer a squash merge after review. The four named working branches are retained after merging.
 
-GitHub does not assign ownership to a branch name. The repository currently has no other human writers or pending write invitations, which gives Nafis exclusive human write access. A local hook also blocks direct pushes to `main`; hooks are bypassable and are not GitHub permissions. Teammates must not be re-invited before main protection is verified. See [governance](docs/REPOSITORY.md).
+GitHub does not assign ownership to working-branch names. Main is restricted by server-side rules: PRs are required, only Nafis can make main updates through PRs, and six CI checks have no bypass. Teammates can leave advisory reviews. Nafis uses PR-only administrator bypass for his own PRs because GitHub does not permit self-approval. Local hooks are additional, bypassable safeguards. See [governance](docs/REPOSITORY.md).
 
 Nafis's normal workflow is:
 

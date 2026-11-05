@@ -22,14 +22,19 @@ function global:gh {
       return '[]'
     }
     if ($global:PolicyScenario -eq 'apply-failed') { $global:LASTEXITCODE = 1; return '{}' }
-    $result = Get-Content (Join-Path $project '.github/main-ruleset.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-    $result | Add-Member -NotePropertyName id -NotePropertyValue 317
-    if ($global:PolicyScenario -eq 'unsafe-bypass') { $result.bypass_actors[0].actor_id = 4 }
+    $body = $Arguments[([Array]::IndexOf($Arguments, '--input') + 1)]
+    $result = Get-Content $body -Raw -Encoding UTF8 | ConvertFrom-Json
+    $isChecks = $result.name -eq 'Main - Required checks and history'
+    $result | Add-Member -NotePropertyName id -NotePropertyValue $(if ($isChecks) { 318 } else { 317 })
+    if ($global:PolicyScenario -eq 'unsafe-bypass' -and -not $isChecks) { $result.bypass_actors[0].actor_id = 4 }
+    if ($global:PolicyScenario -eq 'checks-inactive' -and $isChecks) { $result.enforcement = 'disabled' }
+    if ($global:PolicyScenario -eq 'checks-bypass' -and $isChecks) { $result.bypass_actors = @(@{actor_type='RepositoryRole';actor_id=5;bypass_mode='always'}) }
     return $result | ConvertTo-Json -Depth 12 -Compress
   }
   if ($endpoint -eq 'repos/NafisAfzal/CellShiftAI/rules/branches/main') {
     if ($global:PolicyScenario -eq 'ineffective-rule') { return '[]' }
-    return '[{"type":"update","ruleset_id":317}]'
+    if ($global:PolicyScenario -eq 'missing-checks') { return '[{"type":"update","ruleset_id":317}]' }
+    return '[{"type":"update","ruleset_id":317},{"type":"required_status_checks","ruleset_id":318}]'
   }
   if ($endpoint -like 'repos/NafisAfzal/CellShiftAI/collaborators/*') {
     $login = $endpoint.Split('/')[-1]
@@ -39,7 +44,7 @@ function global:gh {
   throw "Unexpected test CLI call: $endpoint"
 }
 
-foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypass','ineffective-rule','success','success-no-invites')) {
+foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypass','ineffective-rule','checks-inactive','checks-bypass','missing-checks','success','success-no-invites')) {
   $global:PolicyScenario = $case
   $global:PolicyInvitations.Clear()
   $failed = $false
@@ -55,4 +60,4 @@ foreach ($case in @('wrong-owner','unsupported-plan','apply-failed','unsafe-bypa
     throw "Unsafe policy scenario sent invitations or did not stop: $case"
   }
 }
-Write-Output '7 protection scenarios passed; no native GitHub calls made.'
+Write-Output '10 protection scenarios passed; no native GitHub calls made.'

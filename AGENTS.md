@@ -15,7 +15,7 @@ Telco engineer change impact **pre-review** sandbox with 5 fictional cellular si
 - Preserve offline/no-key fallback. `npm run dev` should render UI without provider account access after dependencies and fonts are available.
 - Add tests for any changed logic; run `npm test`, `npm run typecheck`, `npm run lint`, `npm run build` when dependencies and time permit.
 - Never claim 'production ready', RF accuracy, ROI or actual operator integration without evidence.
-- Use the assigned working branches and request `@NafisAfzal` review before merging into `main`. Read `docs/REPOSITORY.md` for the current private-plan enforcement limitation. Do not change visibility, transfer ownership or grant administration without explicit owner authorization.
+- Use the assigned working branches and request `@NafisAfzal` review before merging into `main`. Read `docs/REPOSITORY.md` for main rules and release status. Do not change visibility, transfer ownership or grant administration without explicit owner authorization.
 
 ## Workflow
 1. Explain the current-state files and smallest safe change.

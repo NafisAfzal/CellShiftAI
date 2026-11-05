@@ -7,7 +7,7 @@ if ($LASTEXITCODE -ne 0 -or $actor -ne 'NafisAfzal') { throw 'Authenticate gh as
 $repository = gh api "repos/$repo"
 if ($LASTEXITCODE -ne 0) { throw 'Could not verify repository ownership.' }
 $repository = $repository | ConvertFrom-Json
-if ($repository.owner.login -ne 'NafisAfzal' -or -not $repository.private -or $repository.default_branch -ne 'main') { throw 'Expected the private NafisAfzal repository with main as its default branch.' }
+if ($repository.owner.login -ne 'NafisAfzal' -or $repository.default_branch -cne 'main') { throw 'Expected the NafisAfzal repository with main as its default branch.' }
 $rules = gh api "repos/$repo/rulesets"
 if ($LASTEXITCODE -ne 0) { throw 'GitHub refused ruleset access. Private branch rules require GitHub Pro. No visibility or billing changes were made.' }
 $existing = ($rules | ConvertFrom-Json | Where-Object name -eq 'Main - Nafis approval and checked changes').id
@@ -20,12 +20,23 @@ if ($existing) {
 if ($LASTEXITCODE -ne 0) { throw 'GitHub did not apply main protection. Check the account plan and API response.' }
 $applied = $result | ConvertFrom-Json
 if ($applied.enforcement -ne 'active' -or $applied.target -ne 'branch') { throw 'Main ruleset is not active. No invitations were sent.' }
-if (@($applied.bypass_actors).Count -ne 1 -or $applied.bypass_actors[0].actor_type -ne 'RepositoryRole' -or $applied.bypass_actors[0].actor_id -ne 5 -or $applied.bypass_actors[0].bypass_mode -ne 'always') { throw 'Only the repository administrator may bypass main restrictions. No invitations were sent.' }
+if (@($applied.bypass_actors).Count -ne 1 -or $applied.bypass_actors[0].actor_type -ne 'RepositoryRole' -or $applied.bypass_actors[0].actor_id -ne 5 -or $applied.bypass_actors[0].bypass_mode -ne 'pull_request') { throw 'Only the administrator may bypass through a pull request. No invitations were sent.' }
+# Checks and history have no bypass, including for the owner.
+$checksBody = Join-Path $PSScriptRoot '../.github/main-checks-ruleset.json'
+$checksName = 'Main - Required checks and history'
+$checksExisting = ($rules | ConvertFrom-Json | Where-Object name -eq $checksName).id
+$checksEndpoint = if ($checksExisting) { "repos/$repo/rulesets/$checksExisting" } else { "repos/$repo/rulesets" }
+$checksMethod = if ($checksExisting) { 'PUT' } else { 'POST' }
+$checksResult = gh api $checksEndpoint --method $checksMethod --input $checksBody
+if ($LASTEXITCODE -ne 0) { throw 'Required-check protection failed. No invitations were sent.' }
+$checksApplied = $checksResult | ConvertFrom-Json
+if ($checksApplied.enforcement -ne 'active' -or @($checksApplied.bypass_actors).Count -ne 0) { throw 'Required-check rules must be active without bypass. No invitations were sent.' }
 $active = gh api "repos/$repo/rules/branches/main"
 if ($LASTEXITCODE -ne 0) { throw 'Could not verify effective main rules. No invitations were sent.' }
 $active = $active | ConvertFrom-Json
 $updates = @($active | Where-Object { $_.type -eq 'update' -and $_.ruleset_id -eq $applied.id })
 if ($updates.Count -eq 0) { throw 'Main update restriction is not effective. No invitations were sent.' }
+if (@($active | Where-Object { $_.type -eq 'required_status_checks' -and $_.ruleset_id -eq $checksApplied.id }).Count -eq 0) { throw 'Required checks are not effective on main. No invitations were sent.' }
 foreach ($ruleType in @('pull_request','required_status_checks','deletion','non_fast_forward')) {
   if (@($applied.rules | Where-Object type -eq $ruleType).Count -eq 0) { throw "Missing required rule: $ruleType. No invitations were sent." }
 }

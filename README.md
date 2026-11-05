@@ -55,7 +55,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000**. The repository is private; cloning requires an accepted invitation or owner access.
+Open **http://127.0.0.1:3000**. The source can be read and cloned publicly after release; pushing requires collaborator access.
 
 No environment file is required for the default local mode. For explicit configuration, copy `.env.example` to `.env.local` (`Copy-Item .env.example .env.local` in PowerShell, or `cp .env.example .env.local` in a POSIX shell). Keep `AI_MODE=mock` to avoid provider requests.
 
@@ -132,7 +132,7 @@ Browser checks cover approval, theme persistence, real simulation responses, exp
 
 `main` is the owner-controlled baseline. Nafis works on `nafis`, pushes that branch, and brings checked changes into `main` through a pull request. The local push hook blocks direct pushes to `main`. Repository administration belongs to **NafisAfzal**.
 
-**Current access:** the private repository is owner-only. Pending teammate write invitations were withdrawn because the current GitHub plan cannot restrict private branches. The named teammate branches remain reserved, but teammates cannot push to them yet. Once a supported plan is available, the [protection setup](scripts/protect-main.ps1) can enforce owner-only `main` updates and then restore the requested invitations. It verifies protection before inviting anyone. See [repository governance](docs/REPOSITORY.md). The repository stays private unless Nafis changes its visibility.
+**Collaboration:** the public-release process verifies protected `main` rules before inviting the three teammates. Only Nafis controls main updates through pull requests; required checks have no bypass. Working branch names are team conventions, not individual access restrictions. See [repository governance](docs/REPOSITORY.md) and the [release audit](docs/PRE_RELEASE_CHECK.md).
 
 ## Security and limits
 

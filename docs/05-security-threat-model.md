@@ -22,7 +22,7 @@ React renders provider strings as text; the application does not use raw provide
 
 The repository starts with sanitized history. Local source backups, browser state, internal reports, environment files and generated exports are excluded. Only inspected synthetic screenshots are published. A real key shared outside Git still needs rotation at the issuer.
 
-Nafis owns the private repository and is currently its only human writer. Pending teammate invitations were withdrawn because the current GitHub plan cannot enforce private main-branch rules. The verified protection setup must succeed before restoring their write invitations; see [governance](REPOSITORY.md). CODEOWNERS and local hooks alone are not remote access-control mechanisms.
+Nafis owns the repository. The public-release process verifies owner-controlled main updates and non-bypassable CI checks before inviting teammate writers; see [governance](REPOSITORY.md). Public visitors can read and clone source, but do not receive write access. CODEOWNERS and local hooks alone are not remote access-control mechanisms.
 
 ## Before exposing a server publicly
 
