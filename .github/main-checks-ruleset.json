@@ -1,0 +1,62 @@
+{
+    "name":  "Main - Required checks and history",
+    "target":  "branch",
+    "enforcement":  "active",
+    "bypass_actors":  [
+
+                      ],
+    "conditions":  {
+                       "ref_name":  {
+                                        "include":  [
+                                                        "refs/heads/main"
+                                                    ],
+                                        "exclude":  [
+
+                                                    ]
+                                    }
+                   },
+    "rules":  [
+                  {
+                      "type":  "deletion"
+                  },
+                  {
+                      "type":  "non_fast_forward"
+                  },
+                  {
+                      "type":  "required_linear_history"
+                  },
+                  {
+                      "type":  "required_status_checks",
+                      "parameters":  {
+                                         "strict_required_status_checks_policy":  true,
+                                         "do_not_enforce_on_create":  true,
+                                         "required_status_checks":  [
+                                                                        {
+                                                                            "context":  "Quality",
+                                                                            "integration_id":  15368
+                                                                        },
+                                                                        {
+                                                                            "context":  "Browser workflow",
+                                                                            "integration_id":  15368
+                                                                        },
+                                                                        {
+                                                                            "context":  "Secrets",
+                                                                            "integration_id":  15368
+                                                                        },
+                                                                        {
+                                                                            "context":  "Static analysis",
+                                                                            "integration_id":  15368
+                                                                        },
+                                                                        {
+                                                                            "context":  "Feature workflows (firefox)",
+                                                                            "integration_id":  15368
+                                                                        },
+                                                                        {
+                                                                            "context":  "Feature workflows (webkit)",
+                                                                            "integration_id":  15368
+                                                                        }
+                                                                    ]
+                                     }
+                  }
+              ]
+}
