@@ -12,5 +12,5 @@ test("main protection fails closed before invitations for wrong owner, plan, app
     return;
   }
   assert.equal(result.status, 0, result.stderr || result.error?.message);
-  assert.match(result.stdout, /10 protection scenarios passed/);
+  assert.match(result.stdout, /11 protection scenarios passed/);
 });
